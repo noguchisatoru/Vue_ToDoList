@@ -20,7 +20,7 @@
         </thead>
 
         <tbody>
-          <tr v-for="(todo) in todos" :key="todo">
+          <tr v-for="(todo) in computedTodos" :key="todo">
             <th>{{ todos.indexOf(todo) }}</th>
             <th>{{ todo.text }}</th>
             <th><button v-bind:class="todo.state" v-on:click="change(todos.indexOf(todo))">{{ changeStatus(todo.state) }}</button></th>
@@ -45,6 +45,23 @@ export default {
       index: 0,
       addtext: "",
       todos: []
+    }
+  },
+
+  computed: {
+    //すべて、作業中、完了の切り替え
+    computedTodos: function(){
+      if(this.radioStatus === "all"){
+        return this.todos;
+      }else if(this.radioStatus === "working"){
+        return this.todos.filter(function(el){
+          return el.state === "work";
+        });
+      }else{
+        return this.todos.filter(function(el){
+          return el.state === "end";
+        }); 
+      }
     }
   },
 
