@@ -3,7 +3,7 @@
     <h1>ToDoリスト</h1>
     <div>
       <form>
-        <label><input type="radio" value="all" v-model="radioStatus" checked="true">すべて</label>
+        <label><input type="radio" value="all" v-model="radioStatus">すべて</label>
         <label><input type="radio" value="working" v-model="radioStatus">作業中</label>
         <label><input type="radio" value="complete" v-model="radioStatus">完了</label>
       </form>
@@ -20,10 +20,10 @@
         </thead>
 
         <tbody>
-          <tr v-for="(todo) in computedTodos" :key="todo">
+          <tr v-for="todo in computedTodos" :key="todo.id">
             <th>{{ todos.indexOf(todo) }}</th>
             <th>{{ todo.text }}</th>
-            <th><button v-bind:class="todo.state" v-on:click="change(todos.indexOf(todo))">{{ changeStatus(todo.state) }}</button></th>
+            <th><button v-bind:class="todo.state" v-on:click="changeTaskStatus(todos.indexOf(todo))">{{ changeStatus(todo.state) }}</button></th>
             <th><button id="remove" v-on:click="removeTodo(todos.indexOf(todo))">削除</button></th>
           </tr>  
         </tbody>
@@ -41,7 +41,7 @@
 export default {
   data: function(){
     return{
-      radioStatus: "",
+      radioStatus: "all",
       index: 0,
       addtext: "",
       todos: []
@@ -54,30 +54,30 @@ export default {
       if(this.radioStatus === "all"){
         return this.todos;
       }else if(this.radioStatus === "working"){
-        return this.todos.filter(function(el){
-          return el.state === "work";
+        return this.todos.filter(function(todo){
+          return todo.state === "work";
         });
       }else{
-        return this.todos.filter(function(el){
-          return el.state === "end";
+        return this.todos.filter(function(todo){
+          return todo.state === "end";
         }); 
       }
     }
   },
 
   methods: {
-  //作業中・完了ボタンが押されたとき
-    change: function(el) {
-      if(this.todos[el].state === "work"){
-        this.$set(this.todos[el],"state","end");
+  //タスクの状態を変更する関数
+    changeTaskStatus: function(todo) {
+      if(this.todos[todo].state === "work"){
+        this.todos[todo].state = "end";
       }else{
-        this.$set(this.todos[el],"state","work");
+        this.todos[todo].state = "work";
       }
     },
 
     //ボタンの表記
-    changeStatus: function(el) {
-      if(el === "work"){
+    changeStatus: function(taskStatus) {
+      if(taskStatus === "work"){
         return "作業中";
       }else{
         return "完了";
@@ -92,8 +92,8 @@ export default {
     },
 
     //タスクの削除
-    removeTodo: function(el) {
-      this.todos.splice(el, 1);
+    removeTodo: function(todo) {
+      this.todos.splice(todo, 1);
       this.index--;
     }
   }
