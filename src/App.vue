@@ -94,7 +94,6 @@ export default {
     //タスクの削除
     removeTodo: function(todo) {
       this.todos.splice(todo, 1);
-      this.index--;
     }
   }
 }
